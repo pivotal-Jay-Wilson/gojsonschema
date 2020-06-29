@@ -27,6 +27,7 @@ package gojsonschema
 
 import (
 	"encoding/json"
+	"fmt"
 	"math/big"
 	"reflect"
 	"regexp"
@@ -86,6 +87,14 @@ func (v *subSchema) validateRecursive(currentSubSchema *subSchema, currentNode i
 			)
 		}
 		return
+	}
+
+	if currentSubSchema.description != nil {
+		fmt.Println(*currentSubSchema.description)
+		fmt.Println("-------------------------------")
+		if strings.Contains(*currentSubSchema.description, "DEPRECATED") {
+			result.addInternalError(new(InternalError), context, currentNode, ErrorDetails{})
+		}
 	}
 
 	// Handle referenced schemas, returns directly when a $ref is found
